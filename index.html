@@ -1,562 +1,524 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title></title>
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="2113.65">
-  <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.2px Helvetica}
-    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.2px Helvetica; min-height: 11.0px}
-  </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Finance Calculator - See How Your UK Student Loan Shrinks Over Time</title>
+    <meta name="description" content="Free interactive calculator showing how your UK student loan balance changes over time based on salary - in cash terms and inflation-adjusted (today's money)." />
+    <meta name="keywords" content="student loan calculator, UK student loan, loan repayment, Plan 2, Plan 5, inflation adjusted, salary projection" />
+    <meta name="robots" content="index, follow" />
+    <!-- TODO: replace with your live URL once you've chosen a domain -->
+    <link rel="canonical" href="https://studentfincalc.com" />
+    
+    <!-- Social sharing preview (WhatsApp, LinkedIn, Facebook, etc.) -->
+    <meta property="og:title" content="Student Finance Calculator” />
+    <meta property="og:description" content="See how your UK student loan is projected to shrink over time, in cash and today's money." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://studentfincalc.com" />
+    
+    <!-- Twitter/X card -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Student Finance Calculator” />
+    <meta name="twitter:description" content="See how your UK student loan is projected to shrink over time, in cash and today's money." />
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --blue: #0088BB;
+            --terracotta: #E2725B;
+            --ink: #2b2f33;
+            --muted: #6b7280;
+            --line: #e5e7eb;
+            --bg: #f5f7f9;
+            --card: #ffffff;
+        }
+ 
+        * { box-sizing: border-box; }
+ 
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Arial, system-ui, sans-serif;
+            color: var(--ink);
+            background: var(--bg);
+            line-height: 1.45;
+        }
+ 
+        header {
+            background: linear-gradient(120deg, var(--blue), #00668c);
+            color: #fff;
+            padding: 28px 24px 22px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+ 
+        header .header-text { min-width: 0; }
+        header h1 { margin: 0 0 4px; font-size: 1.6rem; }
+        header p { margin: 0; opacity: 0.9; font-size: 0.95rem; max-width: 950px; }
+        header .logo { flex: 0 0 auto; height: 120px; width: auto; max-width: 200px; object-fit: contain; }
+ 
+        @media (max-width: 640px) {
+            header { flex-direction: column; align-items: flex-start; }
+            header .logo { height: 44px; }
+        }
+ 
+        .wrap {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 22px;
+            display: grid;
+            grid-template-columns: 340px 1fr;
+            gap: 22px;
+        }
+ 
+        @media (max-width: 900px) {
+            .wrap { grid-template-columns: 1fr; }
+        }
+ 
+        .card {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+ 
+        .card h2 { margin: 0 0 14px; font-size: 1.05rem; }
+        .field { margin-bottom: 15px; }
+ 
+        .field label {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+ 
+        .field label .val { color: var(--blue); font-variant-numeric: tabular-nums; }
+        .field label .numwrap { display: inline-flex; align-items: center; gap: 4px; }
+        .field label .numwrap .pre { color: var(--muted); font-weight: 600; }
+        .field label .numwrap .suf { color: var(--muted); font-weight: 600; }
+ 
+        .field label .numbox {
+            width: 88px;
+            padding: 3px 6px;
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-family: inherit;
+            font-weight: 700;
+            color: var(--blue);
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+        }
+ 
+        .field label .numbox:focus { outline: none; border-color: var(--blue); }
+        .field input[type="range"] { width: 100%; accent-color: var(--blue); }
+ 
+        .field input[type="number"], .field select {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-family: inherit;
+        }
+ 
+        .hint { font-size: 0.75rem; color: var(--muted); margin-top: 4px; }
+ 
+        .plan-note {
+            font-size: 0.78rem;
+            color: var(--muted);
+            background: #f0f7fb;
+            border-left: 3px solid var(--blue);
+            padding: 8px 10px;
+            border-radius: 6px;
+            margin-top: 4px;
+        }
+ 
+        .chart-box { position: relative; height: 440px; }
+ 
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 14px;
+            margin-top: 18px;
+        }
+ 
+        .stat {
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            padding: 12px 14px;
+            background: #fafbfc;
+        }
+ 
+        .stat .k { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); }
+        .stat .v { font-size: 1.25rem; font-weight: 700; margin-top: 2px; font-variant-numeric: tabular-nums; }
+        .stat .v.blue { color: var(--blue); }
+        .stat .v.terra { color: var(--terracotta); }
+ 
+        .disclaimer { font-size: 0.72rem; color: var(--muted); margin-top: 16px; }
+ 
+        .tips { margin: 6px 0 4px; padding-left: 20px; }
+        .tips li { font-size: 0.82rem; color: var(--ink); line-height: 1.5; margin-bottom: 9px; }
+        .tips li strong { color: var(--blue); }
+ 
+        footer { text-align: center; font-size: 0.75rem; color: var(--muted); padding: 20px; }
+    </style>
 </head>
 <body>
-<p class="p1">&lt;!DOCTYPE html&gt;</p>
-<p class="p1">&lt;html lang="en"&gt;</p>
-<p class="p1">&lt;head&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta charset="UTF-8" /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0" /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;title&gt;Student Finance Calculator - See How Your UK Student Loan Shrinks Over Time&lt;/title&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta name="description" content="Free interactive calculator showing how your UK student loan balance changes over time based on salary - in cash terms and inflation-adjusted (today's money)." /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta name="keywords" content="student loan calculator, UK student loan, loan repayment, Plan 2, Plan 5, inflation adjusted, salary projection" /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta name="robots" content="index, follow" /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- TODO: replace with your live URL once you've chosen a domain --&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;link rel="canonical" href="https://studentfincalc.com" /&gt;</p>
-<p class="p2"><span class="Apple-converted-space">    </span></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- Social sharing preview (WhatsApp, LinkedIn, Facebook, etc.) --&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta property="og:title" content="Student Finance Calculator” /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta property="og:description" content="See how your UK student loan is projected to shrink over time, in cash and today's money." /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta property="og:type" content="website" /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta property="og:url" content="https://studentfincalc.com" /&gt;</p>
-<p class="p2"><span class="Apple-converted-space">    </span></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- Twitter/X card --&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta name="twitter:card" content="summary" /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta name="twitter:title" content="Student Finance Calculator” /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta name="twitter:description" content="See how your UK student loan is projected to shrink over time, in cash and today's money." /&gt;</p>
-<p class="p2"><span class="Apple-converted-space">    </span></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"&gt;&lt;/script&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;style&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>:root {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>--blue: #0088BB;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>--terracotta: #E2725B;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>--ink: #2b2f33;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>--muted: #6b7280;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>--line: #e5e7eb;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>--bg: #f5f7f9;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>--card: #ffffff;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>* { box-sizing: border-box; }</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>body {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>margin: 0;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-family: "Segoe UI", Arial, system-ui, sans-serif;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>color: var(--ink);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>background: var(--bg);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>line-height: 1.45;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>header {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>background: linear-gradient(120deg, var(--blue), #00668c);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>color: #fff;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>padding: 28px 24px 22px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>display: flex;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>align-items: center;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>justify-content: space-between;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>gap: 20px;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>header .header-text { min-width: 0; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>header h1 { margin: 0 0 4px; font-size: 1.6rem; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>header p { margin: 0; opacity: 0.9; font-size: 0.95rem; max-width: 950px; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>header .logo { flex: 0 0 auto; height: 120px; width: auto; max-width: 200px; object-fit: contain; }</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>@media (max-width: 640px) {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>header { flex-direction: column; align-items: flex-start; }</p>
-<p class="p1"><span class="Apple-converted-space">            </span>header .logo { height: 44px; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.wrap {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>max-width: 1200px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>margin: 0 auto;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>padding: 22px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>display: grid;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>grid-template-columns: 340px 1fr;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>gap: 22px;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>@media (max-width: 900px) {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>.wrap { grid-template-columns: 1fr; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.card {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>background: var(--card);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border: 1px solid var(--line);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 12px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>padding: 20px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>box-shadow: 0 1px 3px rgba(0,0,0,0.04);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.card h2 { margin: 0 0 14px; font-size: 1.05rem; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.field { margin-bottom: 15px; }</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.field label {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>display: flex;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>justify-content: space-between;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>align-items: baseline;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-size: 0.85rem;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-weight: 600;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>margin-bottom: 6px;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.field label .val { color: var(--blue); font-variant-numeric: tabular-nums; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.field label .numwrap { display: inline-flex; align-items: center; gap: 4px; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.field label .numwrap .pre { color: var(--muted); font-weight: 600; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.field label .numwrap .suf { color: var(--muted); font-weight: 600; }</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.field label .numbox {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>width: 88px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>padding: 3px 6px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border: 1px solid var(--line);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 6px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-size: 0.85rem;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-family: inherit;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-weight: 700;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>color: var(--blue);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>text-align: right;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-variant-numeric: tabular-nums;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.field label .numbox:focus { outline: none; border-color: var(--blue); }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.field input[type="range"] { width: 100%; accent-color: var(--blue); }</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.field input[type="number"], .field select {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>width: 100%;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>padding: 8px 10px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border: 1px solid var(--line);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 8px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-size: 0.9rem;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-family: inherit;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.hint { font-size: 0.75rem; color: var(--muted); margin-top: 4px; }</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.plan-note {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-size: 0.78rem;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>color: var(--muted);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>background: #f0f7fb;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border-left: 3px solid var(--blue);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>padding: 8px 10px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 6px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>margin-top: 4px;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.chart-box { position: relative; height: 440px; }</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.stats {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>display: grid;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));</p>
-<p class="p1"><span class="Apple-converted-space">            </span>gap: 14px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>margin-top: 18px;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.stat {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border: 1px solid var(--line);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 10px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>padding: 12px 14px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>background: #fafbfc;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.stat .k { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.stat .v { font-size: 1.25rem; font-weight: 700; margin-top: 2px; font-variant-numeric: tabular-nums; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.stat .v.blue { color: var(--blue); }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.stat .v.terra { color: var(--terracotta); }</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.disclaimer { font-size: 0.72rem; color: var(--muted); margin-top: 16px; }</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.tips { margin: 6px 0 4px; padding-left: 20px; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.tips li { font-size: 0.82rem; color: var(--ink); line-height: 1.5; margin-bottom: 9px; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.tips li strong { color: var(--blue); }</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>footer { text-align: center; font-size: 0.75rem; color: var(--muted); padding: 20px; }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/style&gt;</p>
-<p class="p1">&lt;/head&gt;</p>
-<p class="p1">&lt;body&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;header&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="header-text"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;h1&gt;Student Finance Calculator&lt;/h1&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;p&gt;See how your student loan balance is projected to change over time based on your salary. The chart shows the loan in cash terms (nominal) as well as in today's-equivalent money (inflation-adjusted), so you can understand what the debt is really worth as you repay it.&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;img class="logo" src="logo.png" alt="Logo" /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/header&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="wrap"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;!-- CONTROLS --&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;section class="card" aria-label="Inputs"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;h2&gt;Your details&lt;/h2&gt;</p>
-<p class="p2"><span class="Apple-converted-space">            </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="field"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;label for="plan"&gt;Loan plan</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;span class="val" id="planTag"&gt;&lt;/span&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;/label&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;select id="plan"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="plan2"&gt;Plan 2 (England/Wales, started 2012-2022)&lt;/option&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="plan5"&gt;Plan 5 (England, started 2023 onward)&lt;/option&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="plan1"&gt;Plan 1 (started before 2012)&lt;/option&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="plan4"&gt;Plan 4 (Scotland)&lt;/option&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="pgl"&gt;Postgraduate Loan&lt;/option&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="custom"&gt;Custom&lt;/option&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;/select&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="plan-note" id="planNote"&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="field"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;label for="balance"&gt;Current loan balance</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;span class="numwrap"&gt;&lt;span class="pre"&gt;£&lt;/span&gt;&lt;input type="number" class="numbox" id="balanceNum" min="0" max="120000" step="500" /&gt;&lt;/span&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;/label&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;input type="range" id="balance" min="0" max="120000" step="500" value="45000" /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="field"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;label for="salary"&gt;Current salary</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;span class="numwrap"&gt;&lt;span class="pre"&gt;£&lt;/span&gt;&lt;input type="number" class="numbox" id="salaryNum" min="15000" max="150000" step="500" /&gt;&lt;/span&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;/label&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;input type="range" id="salary" min="15000" max="150000" step="500" value="32000" /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="field"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;label for="growth"&gt;Annual salary growth</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;span class="numwrap"&gt;&lt;input type="number" class="numbox" id="growthNum" min="0" max="8" step="0.1" /&gt;&lt;span class="suf"&gt;%&lt;/span&gt;&lt;/span&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;/label&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;input type="range" id="growth" min="0" max="8" step="0.1" value="3.5" /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="hint"&gt;Average % pay rise per year (above inflation counts too).&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="field"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;label for="threshold"&gt;Repayment threshold</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;span class="numwrap"&gt;&lt;span class="pre"&gt;£&lt;/span&gt;&lt;input type="number" class="numbox" id="thresholdNum" min="15000" max="40000" step="100" /&gt;&lt;/span&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;/label&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;input type="range" id="threshold" min="15000" max="40000" step="100" value="27295" /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="hint"&gt;You repay 9% of income above this (6% for postgraduate loans).&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="field"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;label for="interest"&gt;Loan interest rate</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;span class="numwrap"&gt;&lt;input type="number" class="numbox" id="interestNum" min="0" max="9" step="0.1" /&gt;&lt;span class="suf"&gt;%&lt;/span&gt;&lt;/span&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;/label&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;input type="range" id="interest" min="0" max="9" step="0.1" value="7.3" /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="field"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;label for="inflation"&gt;Inflation (RPI/CPI)</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;span class="numwrap"&gt;&lt;input type="number" class="numbox" id="inflationNum" min="0" max="8" step="0.1" /&gt;&lt;span class="suf"&gt;%&lt;/span&gt;&lt;/span&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;/label&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;input type="range" id="inflation" min="0" max="8" step="0.1" value="3.0" /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="hint"&gt;Used to show the debt in today's money.&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="field"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;label for="writeoff"&gt;Written off after</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;span class="numwrap"&gt;&lt;input type="number" class="numbox" id="writeoffNum" min="10" max="40" step="1" /&gt;&lt;span class="suf"&gt;yrs&lt;/span&gt;&lt;/span&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;/label&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;input type="range" id="writeoff" min="10" max="40" step="1" value="30" /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="hint"&gt;Any remaining balance is cancelled after this many years.&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/section&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;!-- OUTPUT --&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;section class="card" aria-label="Projection"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;h2&gt;Projected balance over time&lt;/h2&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="chart-box"&gt;&lt;canvas id="chart"&gt;&lt;/canvas&gt;&lt;/div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">            </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="stats"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="stat"&gt;&lt;div class="k"&gt;Cleared in&lt;/div&gt;&lt;div class="v blue" id="statCleared"&gt;-&lt;/div&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="stat"&gt;&lt;div class="k"&gt;Total repaid (cash)&lt;/div&gt;&lt;div class="v" id="statRepaid"&gt;-&lt;/div&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="stat"&gt;&lt;div class="k"&gt;Total repaid (today's money)&lt;/div&gt;&lt;div class="v" id="statRepaidReal"&gt;-&lt;/div&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="stat"&gt;&lt;div class="k"&gt;Written off&lt;/div&gt;&lt;div class="v terra" id="statWritten"&gt;-&lt;/div&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;p class="disclaimer"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>This is a simplified educational model. It assumes steady salary growth, constant interest and inflation rates, annual repayments of 9% of income above the threshold (6% for postgraduate loans), and that the threshold rises with inflation. Real UK student loan rules vary and change over time - always check the official figures on GOV.UK before making decisions.</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/p&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;h2 style="margin-top:26px;"&gt;Total repaid vs. starting salary&lt;/h2&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;p class="hint" style="margin-top:-6px; margin-bottom:12px;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>Using all your other settings, this sweeps the &lt;strong&gt;starting salary&lt;/strong&gt; across the x-axis to show the total you'd repay over the life of the loan - in cash and in today's money. The dot marks your current salary.</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="chart-box" style="height:360px;"&gt;&lt;canvas id="chart2"&gt;&lt;/canvas&gt;&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;h2 style="margin-top:26px;"&gt;How to read these charts&lt;/h2&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;ul class="tips"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;li&gt;&lt;strong&gt;Lowest earners often repay the least overall.&lt;/strong&gt; If your salary stays below the repayment threshold, you may pay little or nothing - and any remaining balance is written off at the end of the term.&lt;/li&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;li&gt;&lt;strong&gt;The very highest earners also come out well.&lt;/strong&gt; They clear the whole balance quickly, so interest has less time to compound and they stop paying once the loan is gone.&lt;/li&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;li&gt;&lt;strong&gt;Middle earners frequently pay the most.&lt;/strong&gt; They earn enough to make sizeable repayments, but not enough to clear the balance early - so interest keeps building and they pay for most (or all) of the term.&lt;/li&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;li&gt;&lt;strong&gt;It behaves more like a graduate tax than a normal loan.&lt;/strong&gt; Repayments are a percentage of income above the threshold, not a fixed instalment, so what you pay tracks your salary rather than the size of the debt.&lt;/li&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;li&gt;&lt;strong&gt;Overpaying only helps if you'd actually clear the balance.&lt;/strong&gt; If your projection shows a write-off, extra voluntary payments may just hand money to the loan you'd never have repaid anyway.&lt;/li&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;li&gt;&lt;strong&gt;Watch the real (inflation-adjusted) line.&lt;/strong&gt; A large future balance is worth less in today's money - the gap between the cash and real lines shows how much inflation quietly erodes the debt over time.&lt;/li&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/ul&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/section&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;footer&gt;Built for financial education • Not financial advice&lt;/footer&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;script&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>// ---- Plan presets (indicative 2024/25 figures; user-adjustable) ----</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const PLANS = {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>plan2: { threshold: 27295, interest: 7.3, rate: 0.09, writeoff: 30,</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>note: "Plan 2: repay 9% above threshold; written off 30 years after you were first due to repay. Interest RPI to RPI+3%." },</p>
-<p class="p1"><span class="Apple-converted-space">            </span>plan5: { threshold: 25000, interest: 4.3, rate: 0.09, writeoff: 40,</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>note: "Plan 5: repay 9% above threshold; written off after 40 years. Interest at RPI only." },</p>
-<p class="p1"><span class="Apple-converted-space">            </span>plan1: { threshold: 24990, interest: 4.3, rate: 0.09, writeoff: 25,</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>note: "Plan 1: repay 9% above threshold; written off after 25 years (or at age 65 for older loans)." },</p>
-<p class="p1"><span class="Apple-converted-space">            </span>plan4: { threshold: 31395, interest: 4.3, rate: 0.09, writeoff: 30,</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>note: "Plan 4 (Scotland): repay 9% above threshold; written off after 30 years." },</p>
-<p class="p1"><span class="Apple-converted-space">            </span>pgl: { threshold: 21000, interest: 7.3, rate: 0.06, writeoff: 30,</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>note: "Postgraduate Loan: repay 6% above threshold; written off after 30 years." },</p>
-<p class="p1"><span class="Apple-converted-space">            </span>custom: { note: "Custom: set every value yourself." }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>};</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>const $ = (id) =&gt; document.getElementById(id);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const gbp0 = new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP', maximumFractionDigits: 0 });</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>const inputs = {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>balance: $('balance'), salary: $('salary'), growth: $('growth'),</p>
-<p class="p1"><span class="Apple-converted-space">            </span>threshold: $('threshold'), interest: $('interest'), inflation: $('inflation'),</p>
-<p class="p1"><span class="Apple-converted-space">            </span>writeoff: $('writeoff'), plan: $('plan')</p>
-<p class="p1"><span class="Apple-converted-space">        </span>};</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>let repayRate = PLANS.plan2.rate;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>function applyPlan(key) {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const p = PLANS[key];</p>
-<p class="p1"><span class="Apple-converted-space">            </span>if (key !== 'custom') {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>inputs.threshold.value = p.threshold;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>inputs.interest.value = p.interest;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>inputs.writeoff.value = p.writeoff;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>repayRate = p.rate;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>}</p>
-<p class="p1"><span class="Apple-converted-space">            </span>$('planNote').textContent = p.note;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>render();</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>// ---- Core projection ----</p>
-<p class="p1"><span class="Apple-converted-space">        </span>function project(startSalary) {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const balance0 = +inputs.balance.value;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>let salary = startSalary !== null ? startSalary : +inputs.salary.value;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const growth = +inputs.growth.value / 100;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>let threshold = +inputs.threshold.value;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const interest = +inputs.interest.value / 100;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const inflation = +inputs.inflation.value / 100;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const writeoff = +inputs.writeoff.value;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>const years = [0];</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const nominal = [balance0];</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const real = [balance0];</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>let bal = balance0;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>let totalRepaidNom = 0;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>let totalRepaidReal = 0;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>let clearedYear = null;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>for (let y = 1; y &lt;= writeoff; y++) {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>// Interest accrues on the outstanding balance.</p>
-<p class="p1"><span class="Apple-converted-space">                </span>bal *= (1 + interest);</p>
-<p class="p1"><span class="Apple-converted-space">                </span>// Annual repayment = repayRate of income above the (inflation-rising) threshold.</p>
-<p class="p1"><span class="Apple-converted-space">                </span>const repayment = Math.max(0, (salary - threshold)) * repayRate;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>const actualRepay = Math.min(repayment, bal);</p>
-<p class="p1"><span class="Apple-converted-space">                </span>bal -= actualRepay;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">                </span>totalRepaidNom += actualRepay;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>totalRepaidReal += actualRepay / Math.pow(1 + inflation, y);</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">                </span>years.push(y);</p>
-<p class="p1"><span class="Apple-converted-space">                </span>nominal.push(Math.max(0, bal));</p>
-<p class="p1"><span class="Apple-converted-space">                </span>real.push(Math.max(0, bal) / Math.pow(1 + inflation, y));</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">                </span>if (bal &lt;= 0 &amp;&amp; clearedYear === null) { clearedYear = y; }</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">                </span>// Grow salary and uprate the threshold with inflation for next year.</p>
-<p class="p1"><span class="Apple-converted-space">                </span>salary *= (1 + growth);</p>
-<p class="p1"><span class="Apple-converted-space">                </span>threshold *= (1 + inflation);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>const writtenOff = clearedYear === null ? Math.max(0, bal) : 0;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>return { years, nominal, real, totalRepaidNom, totalRepaidReal, clearedYear, writtenOff, writeoff };</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>// ---- Chart ----</p>
-<p class="p1"><span class="Apple-converted-space">        </span>let chart;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>function render() {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>// Sync the editable number boxes with the sliders (skip the one being typed in).</p>
-<p class="p1"><span class="Apple-converted-space">            </span>['balance','salary','growth','threshold','interest','inflation','writeoff']</p>
-<p class="p1"><span class="Apple-converted-space">            </span>.forEach((k) =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>const box = $(k + 'Num');</p>
-<p class="p1"><span class="Apple-converted-space">                </span>if (box &amp;&amp; document.activeElement !== box) box.value = inputs[k].value;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>});</p>
-<p class="p1"><span class="Apple-converted-space">            </span>$('planTag').textContent = repayRate === 0.06 ? '6% repay' : '9% repay';</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>const d = project(null);</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>const data = {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>datasets: [</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>label: 'Balance (cash / nominal)',</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>data: d.years.map((yr, i) =&gt; ({ x: yr, y: d.nominal[i] })),</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>borderColor: '#0088BB',</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>backgroundColor: 'rgba(0,136,187,0.08)',</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>borderWidth: 2.5, fill: true, tension: 0.25, pointRadius: 0, pointHoverRadius: 5,</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>},</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>label: "Balance (today's money / real)",</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>data: d.years.map((yr, i) =&gt; ({ x: yr, y: d.real[i] })),</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>borderColor: '#E2725B',</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>backgroundColor: 'rgba(226,114,91,0.06)',</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>borderWidth: 2.5, borderDash: [6, 4], fill: false, tension: 0.25, pointRadius: 0, pointHoverRadius: 5,</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>},</p>
-<p class="p1"><span class="Apple-converted-space">                </span>],</p>
-<p class="p1"><span class="Apple-converted-space">            </span>};</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>const opts = {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>responsive: true, maintainAspectRatio: false,</p>
-<p class="p1"><span class="Apple-converted-space">                </span>interaction: { mode: 'index', intersect: false },</p>
-<p class="p1"><span class="Apple-converted-space">                </span>plugins: {</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>legend: { labels: { usePointStyle: true, font: { family: 'Arial' } } },</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>tooltip: {</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>callbacks: {</p>
-<p class="p1"><span class="Apple-converted-space">                            </span>title: (items) =&gt; 'Year ' + items[0].parsed.x,</p>
-<p class="p1"><span class="Apple-converted-space">                            </span>label: (ctx) =&gt; ctx.dataset.label + ': ' + gbp0.format(ctx.parsed.y),</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>},</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>},</p>
-<p class="p1"><span class="Apple-converted-space">                </span>},</p>
-<p class="p1"><span class="Apple-converted-space">                </span>scales: {</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>x: { type: 'linear', min: 0, max: +inputs.writeoff.value,</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>title: { display: true, text: 'Years from now' }, grid: { display: false },</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>ticks: { stepSize: 1, precision: 0 } },</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>y: { title: { display: true, text: 'Outstanding balance' },</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>ticks: { callback: (v) =&gt; gbp0.format(v) },</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>grid: { color: '#eef1f4' }, beginAtZero: true },</p>
-<p class="p1"><span class="Apple-converted-space">                </span>},</p>
-<p class="p1"><span class="Apple-converted-space">            </span>};</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>if (chart) {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>chart.data = data; chart.options = opts; chart.update();</p>
-<p class="p1"><span class="Apple-converted-space">            </span>} else {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>chart = new Chart($('chart'), { type: 'line', data, options: opts });</p>
-<p class="p1"><span class="Apple-converted-space">            </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>// stats</p>
-<p class="p1"><span class="Apple-converted-space">            </span>$('statCleared').textContent = d.clearedYear ? d.clearedYear + (d.clearedYear === 1 ? ' year' : ' years') : 'Not cleared';</p>
-<p class="p1"><span class="Apple-converted-space">            </span>$('statRepaid').textContent = gbp0.format(d.totalRepaidNom);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>$('statRepaidReal').textContent = gbp0.format(d.totalRepaidReal);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>$('statWritten').textContent = gbp0.format(d.writtenOff);</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>renderSalarySweep();</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>// ---- Second chart: total repaid vs. starting salary ----</p>
-<p class="p1"><span class="Apple-converted-space">        </span>let chart2;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>function renderSalarySweep() {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const min = +inputs.salary.min;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const max = +inputs.salary.max;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const step = Math.max(500, Math.round((max - min) / 120 / 500) * 500);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const current = +inputs.salary.value;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>const cash = [];</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const real = [];</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>for (let s = min; s &lt;= max; s += step) {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>const r = project(s);</p>
-<p class="p1"><span class="Apple-converted-space">                </span>cash.push({ x: s, y: r.totalRepaidNom });</p>
-<p class="p1"><span class="Apple-converted-space">                </span>real.push({ x: s, y: r.totalRepaidReal });</p>
-<p class="p1"><span class="Apple-converted-space">            </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>const cur = project(current);</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>const data = {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>datasets: [</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>label: 'Total repaid (cash)',</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>data: cash,</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>borderColor: '#0088BB', backgroundColor: 'rgba(0,136,187,0.08)',</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>borderWidth: 2.5, fill: true, tension: 0.2, pointRadius: 0, pointHoverRadius: 5, order: 2,</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>},</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>label: "Total repaid (today's money)",</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>data: real,</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>borderColor: '#E2725B', backgroundColor: 'rgba(226,114,91,0.06)',</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>borderWidth: 2.5, borderDash: [6, 4], fill: false, tension: 0.2, pointRadius: 0, pointHoverRadius: 5, order: 3,</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>},</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>label: 'Your salary',</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>data: [{ x: current, y: cur.totalRepaidNom }, { x: current, y: cur.totalRepaidReal }],</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>borderColor: '#2b2f33', backgroundColor: '#2b2f33',</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>showLine: false, pointRadius: 5, pointHoverRadius: 6, order: 1,</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>},</p>
-<p class="p1"><span class="Apple-converted-space">                </span>],</p>
-<p class="p1"><span class="Apple-converted-space">            </span>};</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>const opts = {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>responsive: true, maintainAspectRatio: false,</p>
-<p class="p1"><span class="Apple-converted-space">                </span>interaction: { mode: 'index', intersect: false },</p>
-<p class="p1"><span class="Apple-converted-space">                </span>plugins: {</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>legend: { labels: { usePointStyle: true, font: { family: 'Arial' } } },</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>tooltip: {</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>callbacks: {</p>
-<p class="p1"><span class="Apple-converted-space">                            </span>title: (items) =&gt; 'Starting salary ' + gbp0.format(items[0].parsed.x),</p>
-<p class="p1"><span class="Apple-converted-space">                            </span>label: (ctx) =&gt; ctx.dataset.label + ': ' + gbp0.format(ctx.parsed.y),</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>},</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>},</p>
-<p class="p1"><span class="Apple-converted-space">                </span>},</p>
-<p class="p1"><span class="Apple-converted-space">                </span>scales: {</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>x: { type: 'linear', min, max,</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>title: { display: true, text: 'Starting salary' },</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>ticks: { callback: (v) =&gt; gbp0.format(v) }, grid: { display: false } },</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>y: { title: { display: true, text: 'Total repaid over loan life' },</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>ticks: { callback: (v) =&gt; gbp0.format(v) },</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>grid: { color: '#eef1f4' }, beginAtZero: true },</p>
-<p class="p1"><span class="Apple-converted-space">                </span>},</p>
-<p class="p1"><span class="Apple-converted-space">            </span>};</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>if (chart2) {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>chart2.data = data; chart2.options = opts; chart2.update();</p>
-<p class="p1"><span class="Apple-converted-space">            </span>} else {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>chart2 = new Chart($('chart2'), { type: 'line', data, options: opts });</p>
-<p class="p1"><span class="Apple-converted-space">            </span>}</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>// ---- Wire up ----</p>
-<p class="p1"><span class="Apple-converted-space">        </span>inputs.plan.addEventListener('change', (e) =&gt; applyPlan(e.target.value));</p>
-<p class="p1"><span class="Apple-converted-space">        </span>['balance','salary','growth','threshold','interest','inflation','writeoff']</p>
-<p class="p1"><span class="Apple-converted-space">            </span>.forEach((k) =&gt; inputs[k].addEventListener('input', () =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>// Editing a plan-specific field switches the model to "custom" repay logic only if needed.</p>
-<p class="p1"><span class="Apple-converted-space">                </span>if (['threshold','interest','writeoff'].includes(k)) {</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>inputs.plan.value = 'custom';</p>
-<p class="p1"><span class="Apple-converted-space">                </span>}</p>
-<p class="p1"><span class="Apple-converted-space">                </span>render();</p>
-<p class="p1"><span class="Apple-converted-space">            </span>}));</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>// Typed number boxes feed back into the sliders (clamped to each slider's range).</p>
-<p class="p1"><span class="Apple-converted-space">        </span>['balance','salary','growth','threshold','interest','inflation','writeoff']</p>
-<p class="p1"><span class="Apple-converted-space">            </span>.forEach((k) =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>const box = $(k + 'Num');</p>
-<p class="p1"><span class="Apple-converted-space">                </span>const slider = inputs[k];</p>
-<p class="p1"><span class="Apple-converted-space">                </span>const sync = () =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>let v = parseFloat(box.value);</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>if (isNaN(v)) return;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>v = Math.min(+slider.max, Math.max(+slider.min, v));</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>slider.value = v;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>render();</p>
-<p class="p1"><span class="Apple-converted-space">                </span>};</p>
-<p class="p1"><span class="Apple-converted-space">                </span>box.addEventListener('input', sync);</p>
-<p class="p1"><span class="Apple-converted-space">                </span>// On blur/Enter, snap the box to the (clamped) slider value for a clean display.</p>
-<p class="p1"><span class="Apple-converted-space">                </span>box.addEventListener('change', () =&gt; { box.value = slider.value; });</p>
-<p class="p1"><span class="Apple-converted-space">            </span>});</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>applyPlan('plan2');</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/script&gt;</p>
-<p class="p1">&lt;/body&gt;</p>
-<p class="p1">&lt;/html&gt;</p>
-</body>
-</html>
+ 
+    <header>
+        <div class="header-text">
+            <h1>Student Finance Calculator</h1>
+            <p>See how your student loan balance is projected to change over time based on your salary. The chart shows the loan in cash terms (nominal) as well as in today's-equivalent money (inflation-adjusted), so you can understand what the debt is really worth as you repay it.</p>
+        </div>
+        <img class="logo" src="logo.png" alt="Logo" />
+    </header>
+ 
+    <div class="wrap">
+        <!-- CONTROLS -->
+        <section class="card" aria-label="Inputs">
+            <h2>Your details</h2>
+            
+            <div class="field">
+                <label for="plan">Loan plan
+                    <span class="val" id="planTag"></span>
+                </label>
+                <select id="plan">
+                    <option value="plan2">Plan 2 (England/Wales, started 2012-2022)</option>
+                    <option value="plan5">Plan 5 (England, started 2023 onward)</option>
+                    <option value="plan1">Plan 1 (started before 2012)</option>
+                    <option value="plan4">Plan 4 (Scotland)</option>
+                    <option value="pgl">Postgraduate Loan</option>
+                    <option value="custom">Custom</option>
+                </select>
+                <div class="plan-note" id="planNote"></div>
+            </div>
+ 
+            <div class="field">
+                <label for="balance">Current loan balance
+                    <span class="numwrap"><span class="pre">£</span><input type="number" class="numbox" id="balanceNum" min="0" max="120000" step="500" /></span>
+                </label>
+                <input type="range" id="balance" min="0" max="120000" step="500" value="45000" />
+            </div>
+ 
+            <div class="field">
+                <label for="salary">Current salary
+                    <span class="numwrap"><span class="pre">£</span><input type="number" class="numbox" id="salaryNum" min="15000" max="150000" step="500" /></span>
+                </label>
+                <input type="range" id="salary" min="15000" max="150000" step="500" value="32000" />
+            </div>
+ 
+            <div class="field">
+                <label for="growth">Annual salary growth
+                    <span class="numwrap"><input type="number" class="numbox" id="growthNum" min="0" max="8" step="0.1" /><span class="suf">%</span></span>
+                </label>
+                <input type="range" id="growth" min="0" max="8" step="0.1" value="3.5" />
+                <div class="hint">Average % pay rise per year (above inflation counts too).</div>
+            </div>
+ 
+            <div class="field">
+                <label for="threshold">Repayment threshold
+                    <span class="numwrap"><span class="pre">£</span><input type="number" class="numbox" id="thresholdNum" min="15000" max="40000" step="100" /></span>
+                </label>
+                <input type="range" id="threshold" min="15000" max="40000" step="100" value="27295" />
+                <div class="hint">You repay 9% of income above this (6% for postgraduate loans).</div>
+            </div>
+ 
+            <div class="field">
+                <label for="interest">Loan interest rate
+                    <span class="numwrap"><input type="number" class="numbox" id="interestNum" min="0" max="9" step="0.1" /><span class="suf">%</span></span>
+                </label>
+                <input type="range" id="interest" min="0" max="9" step="0.1" value="7.3" />
+            </div>
+ 
+            <div class="field">
+                <label for="inflation">Inflation (RPI/CPI)
+                    <span class="numwrap"><input type="number" class="numbox" id="inflationNum" min="0" max="8" step="0.1" /><span class="suf">%</span></span>
+                </label>
+                <input type="range" id="inflation" min="0" max="8" step="0.1" value="3.0" />
+                <div class="hint">Used to show the debt in today's money.</div>
+            </div>
+ 
+            <div class="field">
+                <label for="writeoff">Written off after
+                    <span class="numwrap"><input type="number" class="numbox" id="writeoffNum" min="10" max="40" step="1" /><span class="suf">yrs</span></span>
+                </label>
+                <input type="range" id="writeoff" min="10" max="40" step="1" value="30" />
+                <div class="hint">Any remaining balance is cancelled after this many years.</div>
+            </div>
+        </section>
+ 
+        <!-- OUTPUT -->
+        <section class="card" aria-label="Projection">
+            <h2>Projected balance over time</h2>
+            <div class="chart-box"><canvas id="chart"></canvas></div>
+            
+            <div class="stats">
+                <div class="stat"><div class="k">Cleared in</div><div class="v blue" id="statCleared">-</div></div>
+                <div class="stat"><div class="k">Total repaid (cash)</div><div class="v" id="statRepaid">-</div></div>
+                <div class="stat"><div class="k">Total repaid (today's money)</div><div class="v" id="statRepaidReal">-</div></div>
+                <div class="stat"><div class="k">Written off</div><div class="v terra" id="statWritten">-</div></div>
+            </div>
+ 
+            <p class="disclaimer">
+                This is a simplified educational model. It assumes steady salary growth, constant interest and inflation rates, annual repayments of 9% of income above the threshold (6% for postgraduate loans), and that the threshold rises with inflation. Real UK student loan rules vary and change over time - always check the official figures on GOV.UK before making decisions.
+            </p>
+ 
+            <h2 style="margin-top:26px;">Total repaid vs. starting salary</h2>
+            <p class="hint" style="margin-top:-6px; margin-bottom:12px;">
+                Using all your other settings, this sweeps the <strong>starting salary</strong> across the x-axis to show the total you'd repay over the life of the loan - in cash and in today's money. The dot marks your current salary.
+            </p>
+            <div class="chart-box" style="height:360px;"><canvas id="chart2"></canvas></div>
+ 
+            <h2 style="margin-top:26px;">How to read these charts</h2>
+            <ul class="tips">
+                <li><strong>Lowest earners often repay the least overall.</strong> If your salary stays below the repayment threshold, you may pay little or nothing - and any remaining balance is written off at the end of the term.</li>
+                <li><strong>The very highest earners also come out well.</strong> They clear the whole balance quickly, so interest has less time to compound and they stop paying once the loan is gone.</li>
+                <li><strong>Middle earners frequently pay the most.</strong> They earn enough to make sizeable repayments, but not enough to clear the balance early - so interest keeps building and they pay for most (or all) of the term.</li>
+                <li><strong>It behaves more like a graduate tax than a normal loan.</strong> Repayments are a percentage of income above the threshold, not a fixed instalment, so what you pay tracks your salary rather than the size of the debt.</li>
+                <li><strong>Overpaying only helps if you'd actually clear the balance.</strong> If your projection shows a write-off, extra voluntary payments may just hand money to the loan you'd never have repaid anyway.</li>
+                <li><strong>Watch the real (inflation-adjusted) line.</strong> A large future balance is worth less in today's money - the gap between the cash and real lines shows how much inflation quietly erodes the debt over time.</li>
+            </ul>
+        </section>
+    </div>
+ 
+    <footer>Built for financial education • Not financial advice</footer>
+ 
+    <script>
+        // ---- Plan presets (indicative 2024/25 figures; user-adjustable) ----
+        const PLANS = {
+            plan2: { threshold: 27295, interest: 7.3, rate: 0.09, writeoff: 30,
+                    note: "Plan 2: repay 9% above threshold; written off 30 years after you were first due to repay. Interest RPI to RPI+3%." },
+            plan5: { threshold: 25000, interest: 4.3, rate: 0.09, writeoff: 40,
+                    note: "Plan 5: repay 9% above threshold; written off after 40 years. Interest at RPI only." },
+            plan1: { threshold: 24990, interest: 4.3, rate: 0.09, writeoff: 25,
+                    note: "Plan 1: repay 9% above threshold; written off after 25 years (or at age 65 for older loans)." },
+            plan4: { threshold: 31395, interest: 4.3, rate: 0.09, writeoff: 30,
+                    note: "Plan 4 (Scotland): repay 9% above threshold; written off after 30 years." },
+            pgl: { threshold: 21000, interest: 7.3, rate: 0.06, writeoff: 30,
+                    note: "Postgraduate Loan: repay 6% above threshold; written off after 30 years." },
+            custom: { note: "Custom: set every value yourself." }
+        };
+ 
+        const $ = (id) => document.getElementById(id);
+        const gbp0 = new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP', maximumFractionDigits: 0 });
+ 
+        const inputs = {
+            balance: $('balance'), salary: $('salary'), growth: $('growth'),
+            threshold: $('threshold'), interest: $('interest'), inflation: $('inflation'),
+            writeoff: $('writeoff'), plan: $('plan')
+        };
+ 
+        let repayRate = PLANS.plan2.rate;
+ 
+        function applyPlan(key) {
+            const p = PLANS[key];
+            if (key !== 'custom') {
+                inputs.threshold.value = p.threshold;
+                inputs.interest.value = p.interest;
+                inputs.writeoff.value = p.writeoff;
+                repayRate = p.rate;
+            }
+            $('planNote').textContent = p.note;
+            render();
+        }
+ 
+        // ---- Core projection ----
+        function project(startSalary) {
+            const balance0 = +inputs.balance.value;
+            let salary = startSalary !== null ? startSalary : +inputs.salary.value;
+            const growth = +inputs.growth.value / 100;
+            let threshold = +inputs.threshold.value;
+            const interest = +inputs.interest.value / 100;
+            const inflation = +inputs.inflation.value / 100;
+            const writeoff = +inputs.writeoff.value;
+ 
+            const years = [0];
+            const nominal = [balance0];
+            const real = [balance0];
+ 
+            let bal = balance0;
+            let totalRepaidNom = 0;
+            let totalRepaidReal = 0;
+            let clearedYear = null;
+ 
+            for (let y = 1; y <= writeoff; y++) {
+                // Interest accrues on the outstanding balance.
+                bal *= (1 + interest);
+                // Annual repayment = repayRate of income above the (inflation-rising) threshold.
+                const repayment = Math.max(0, (salary - threshold)) * repayRate;
+                const actualRepay = Math.min(repayment, bal);
+                bal -= actualRepay;
+ 
+                totalRepaidNom += actualRepay;
+                totalRepaidReal += actualRepay / Math.pow(1 + inflation, y);
+ 
+                years.push(y);
+                nominal.push(Math.max(0, bal));
+                real.push(Math.max(0, bal) / Math.pow(1 + inflation, y));
+ 
+                if (bal <= 0 && clearedYear === null) { clearedYear = y; }
+ 
+                // Grow salary and uprate the threshold with inflation for next year.
+                salary *= (1 + growth);
+                threshold *= (1 + inflation);
+            }
+ 
+            const writtenOff = clearedYear === null ? Math.max(0, bal) : 0;
+            return { years, nominal, real, totalRepaidNom, totalRepaidReal, clearedYear, writtenOff, writeoff };
+        }
+ 
+        // ---- Chart ----
+        let chart;
+        function render() {
+            // Sync the editable number boxes with the sliders (skip the one being typed in).
+            ['balance','salary','growth','threshold','interest','inflation','writeoff']
+            .forEach((k) => {
+                const box = $(k + 'Num');
+                if (box && document.activeElement !== box) box.value = inputs[k].value;
+            });
+            $('planTag').textContent = repayRate === 0.06 ? '6% repay' : '9% repay';
+ 
+            const d = project(null);
+ 
+            const data = {
+                datasets: [
+                    {
+                        label: 'Balance (cash / nominal)',
+                        data: d.years.map((yr, i) => ({ x: yr, y: d.nominal[i] })),
+                        borderColor: '#0088BB',
+                        backgroundColor: 'rgba(0,136,187,0.08)',
+                        borderWidth: 2.5, fill: true, tension: 0.25, pointRadius: 0, pointHoverRadius: 5,
+                    },
+                    {
+                        label: "Balance (today's money / real)",
+                        data: d.years.map((yr, i) => ({ x: yr, y: d.real[i] })),
+                        borderColor: '#E2725B',
+                        backgroundColor: 'rgba(226,114,91,0.06)',
+                        borderWidth: 2.5, borderDash: [6, 4], fill: false, tension: 0.25, pointRadius: 0, pointHoverRadius: 5,
+                    },
+                ],
+            };
+ 
+            const opts = {
+                responsive: true, maintainAspectRatio: false,
+                interaction: { mode: 'index', intersect: false },
+                plugins: {
+                    legend: { labels: { usePointStyle: true, font: { family: 'Arial' } } },
+                    tooltip: {
+                        callbacks: {
+                            title: (items) => 'Year ' + items[0].parsed.x,
+                            label: (ctx) => ctx.dataset.label + ': ' + gbp0.format(ctx.parsed.y),
+                        },
+                    },
+                },
+                scales: {
+                    x: { type: 'linear', min: 0, max: +inputs.writeoff.value,
+                        title: { display: true, text: 'Years from now' }, grid: { display: false },
+                        ticks: { stepSize: 1, precision: 0 } },
+                    y: { title: { display: true, text: 'Outstanding balance' },
+                        ticks: { callback: (v) => gbp0.format(v) },
+                        grid: { color: '#eef1f4' }, beginAtZero: true },
+                },
+            };
+ 
+            if (chart) {
+                chart.data = data; chart.options = opts; chart.update();
+            } else {
+                chart = new Chart($('chart'), { type: 'line', data, options: opts });
+            }
+ 
+            // stats
+            $('statCleared').textContent = d.clearedYear ? d.clearedYear + (d.clearedYear === 1 ? ' year' : ' years') : 'Not cleared';
+            $('statRepaid').textContent = gbp0.format(d.totalRepaidNom);
+            $('statRepaidReal').textContent = gbp0.format(d.totalRepaidReal);
+            $('statWritten').textContent = gbp0.format(d.writtenOff);
+ 
+            renderSalarySweep();
+        }
+ 
+        // ---- Second chart: total repaid vs. starting salary ----
+        let chart2;
+        function renderSalarySweep() {
+            const min = +inputs.salary.min;
+            const max = +inputs.salary.max;
+            const step = Math.max(500, Math.round((max - min) / 120 / 500) * 500);
+            const current = +inputs.salary.value;
+ 
+            const cash = [];
+            const real = [];
+ 
+            for (let s = min; s <= max; s += step) {
+                const r = project(s);
+                cash.push({ x: s, y: r.totalRepaidNom });
+                real.push({ x: s, y: r.totalRepaidReal });
+            }
+ 
+            const cur = project(current);
+ 
+            const data = {
+                datasets: [
+                    {
+                        label: 'Total repaid (cash)',
+                        data: cash,
+                        borderColor: '#0088BB', backgroundColor: 'rgba(0,136,187,0.08)',
+                        borderWidth: 2.5, fill: true, tension: 0.2, pointRadius: 0, pointHoverRadius: 5, order: 2,
+                    },
+                    {
+                        label: "Total repaid (today's money)",
+                        data: real,
+                        borderColor: '#E2725B', backgroundColor: 'rgba(226,114,91,0.06)',
+                        borderWidth: 2.5, borderDash: [6, 4], fill: false, tension: 0.2, pointRadius: 0, pointHoverRadius: 5, order: 3,
+                    },
+                    {
+                        label: 'Your salary',
+                        data: [{ x: current, y: cur.totalRepaidNom }, { x: current, y: cur.totalRepaidReal }],
+                        borderColor: '#2b2f33', backgroundColor: '#2b2f33',
+                        showLine: false, pointRadius: 5, pointHoverRadius: 6, order: 1,
+                    },
+                ],
+            };
+ 
+            const opts = {
+                responsive: true, maintainAspectRatio: false,
+                interaction: { mode: 'index', intersect: false },
+                plugins: {
+                    legend: { labels: { usePointStyle: true, font: { family: 'Arial' } } },
+                    tooltip: {
+                        callbacks: {
+                            title: (items) => 'Starting salary ' + gbp0.format(items[0].parsed.x),
+                            label: (ctx) => ctx.dataset.label + ': ' + gbp0.format(ctx.parsed.y),
+                        },
+                    },
+                },
+                scales: {
+                    x: { type: 'linear', min, max,
+                        title: { display: true, text: 'Starting salary' },
+                        ticks: { callback: (v) => gbp0.format(v) }, grid: { display: false } },
+                    y: { title: { display: true, text: 'Total repaid over loan life' },
+                        ticks: { callback: (v) => gbp0.format(v) },
+                        grid: { color: '#eef1f4' }, beginAtZero: true },
+                },
+            };
+ 
+            if (chart2) {
+                chart2.data = data; chart2.options = opts; chart2.update();
+            } else {
+                chart2 = new Chart($('chart2'), { type: 'line', data, options: opts });
+            }
+        }
+ 
+        // ---- Wire up ----
+        inputs.plan.addEventListener('change', (e) => applyPlan(e.target.value));
+        ['balance','salary','growth','threshold','interest','inflation','writeoff']
+            .forEach((k) => inputs[k].addEventListener('input', () => {
+                // Editing a plan-specific field switches the model to "custom" repay logic only if needed.
+                if (['threshold','interest','writeoff'].includes(k)) {
+                    inputs.plan.value = 'custom';
+                }
+                render();
+            }));
