@@ -7,14 +7,13 @@
     <meta name="description" content="Free interactive calculator showing how your UK student loan balance changes over time based on salary - in cash terms and inflation-adjusted (today's money)." />
     <meta name="keywords" content="student loan calculator, UK student loan, loan repayment, Plan 2, Plan 5, inflation adjusted, salary projection" />
     <meta name="robots" content="index, follow" />
-    <!-- TODO: replace with your live URL once you've chosen a domain -->
-    <link rel="canonical" href="https://your-domain-here/" />
+    <link rel="canonical" href="https://studentfincalc.com/" />
     
-    <!-- Social sharing preview (WhatsApp, LinkedIn, Facebook, etc.) -->
+    <!-- Social sharing preview -->
     <meta property="og:title" content="Student Loan Explorer" />
     <meta property="og:description" content="See how your UK student loan is projected to shrink over time, in cash and today's money." />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://your-domain-here/" />
+    <meta property="og:url" content="https://studentfincalc.com/" />
     
     <!-- Twitter/X card -->
     <meta name="twitter:card" content="summary" />
@@ -289,10 +288,9 @@
     <footer>Built for financial education • Not financial advice</footer>
 
     <script>
-        // ---- Plan presets (indicative 2024/25 figures; user-adjustable) ----
         const PLANS = {
             plan2: { threshold: 27295, interest: 7.3, rate: 0.09, writeoff: 30,
-                    note: "Plan 2: repay 9% above threshold; written off 30 years after you were first due to repay. Interest RPI to RPI+3%." },
+                    note: "Plan 2: repay 9% above threshold; written off 30 years after you were first due to repay. Interest RPI to RPI+3." },
             plan5: { threshold: 25000, interest: 4.3, rate: 0.09, writeoff: 40,
                     note: "Plan 5: repay 9% above threshold; written off after 40 years. Interest at RPI only." },
             plan1: { threshold: 24990, interest: 4.3, rate: 0.09, writeoff: 25,
@@ -327,7 +325,6 @@
             render();
         }
 
-        // ---- Core projection ----
         function project(startSalary) {
             const balance0 = +inputs.balance.value;
             let salary = startSalary !== null ? startSalary : +inputs.salary.value;
@@ -347,9 +344,7 @@
             let clearedYear = null;
 
             for (let y = 1; y <= writeoff; y++) {
-                // Interest accrues on the outstanding balance.
                 bal *= (1 + interest);
-                // Annual repayment = repayRate of income above the (inflation-rising) threshold.
                 const repayment = Math.max(0, (salary - threshold)) * repayRate;
                 const actualRepay = Math.min(repayment, bal);
                 bal -= actualRepay;
@@ -363,7 +358,6 @@
 
                 if (bal <= 0 && clearedYear === null) { clearedYear = y; }
 
-                // Grow salary and uprate the threshold with inflation for next year.
                 salary *= (1 + growth);
                 threshold *= (1 + inflation);
             }
@@ -372,10 +366,8 @@
             return { years, nominal, real, totalRepaidNom, totalRepaidReal, clearedYear, writtenOff, writeoff };
         }
 
-        // ---- Chart ----
         let chart;
         function render() {
-            // Sync the editable number boxes with the sliders (skip the one being typed in).
             ['balance','salary','growth','threshold','interest','inflation','writeoff']
             .forEach((k) => {
                 const box = $(k + 'Num');
@@ -432,7 +424,6 @@
                 chart = new Chart($('chart'), { type: 'line', data, options: opts });
             }
 
-            // stats
             $('statCleared').textContent = d.clearedYear ? d.clearedYear + (d.clearedYear === 1 ? ' year' : ' years') : 'Not cleared';
             $('statRepaid').textContent = gbp0.format(d.totalRepaidNom);
             $('statRepaidReal').textContent = gbp0.format(d.totalRepaidReal);
@@ -441,7 +432,6 @@
             renderSalarySweep();
         }
 
-        // ---- Second chart: total repaid vs. starting salary ----
         let chart2;
         function renderSalarySweep() {
             const min = +inputs.salary.min;
@@ -512,18 +502,15 @@
             }
         }
 
-        // ---- Wire up ----
         inputs.plan.addEventListener('change', (e) => applyPlan(e.target.value));
         ['balance','salary','growth','threshold','interest','inflation','writeoff']
             .forEach((k) => inputs[k].addEventListener('input', () => {
-                // Editing a plan-specific field switches the model to "custom" repay logic only if needed.
                 if (['threshold','interest','writeoff'].includes(k)) {
                     inputs.plan.value = 'custom';
                 }
                 render();
             }));
 
-        // Typed number boxes feed back into the sliders (clamped to each slider's range).
         ['balance','salary','growth','threshold','interest','inflation','writeoff']
             .forEach((k) => {
                 const box = $(k + 'Num');
@@ -536,7 +523,6 @@
                     render();
                 };
                 box.addEventListener('input', sync);
-                // On blur/Enter, snap the box to the (clamped) slider value for a clean display.
                 box.addEventListener('change', () => { box.value = slider.value; });
             });
 
