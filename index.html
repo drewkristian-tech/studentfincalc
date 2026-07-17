@@ -3,22 +3,22 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Student Finance Calculator - See How Your UK Student Loan Shrinks Over Time</title>
+    <title>Student Loan Explorer - See How Your UK Student Loan Shrinks Over Time</title>
     <meta name="description" content="Free interactive calculator showing how your UK student loan balance changes over time based on salary - in cash terms and inflation-adjusted (today's money)." />
     <meta name="keywords" content="student loan calculator, UK student loan, loan repayment, Plan 2, Plan 5, inflation adjusted, salary projection" />
     <meta name="robots" content="index, follow" />
     <!-- TODO: replace with your live URL once you've chosen a domain -->
-    <link rel="canonical" href="https://studentfincalc.com" />
+    <link rel="canonical" href="https://your-domain-here/" />
     
     <!-- Social sharing preview (WhatsApp, LinkedIn, Facebook, etc.) -->
-    <meta property="og:title" content="Student Finance Calculator” />
+    <meta property="og:title" content="Student Loan Explorer" />
     <meta property="og:description" content="See how your UK student loan is projected to shrink over time, in cash and today's money." />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://studentfincalc.com" />
+    <meta property="og:url" content="https://your-domain-here/" />
     
     <!-- Twitter/X card -->
     <meta name="twitter:card" content="summary" />
-    <meta name="twitter:title" content="Student Finance Calculator” />
+    <meta name="twitter:title" content="Student Loan Explorer" />
     <meta name="twitter:description" content="See how your UK student loan is projected to shrink over time, in cash and today's money." />
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
@@ -32,9 +32,9 @@
             --bg: #f5f7f9;
             --card: #ffffff;
         }
- 
+
         * { box-sizing: border-box; }
- 
+
         body {
             margin: 0;
             font-family: "Segoe UI", Arial, system-ui, sans-serif;
@@ -42,7 +42,7 @@
             background: var(--bg);
             line-height: 1.45;
         }
- 
+
         header {
             background: linear-gradient(120deg, var(--blue), #00668c);
             color: #fff;
@@ -52,17 +52,17 @@
             justify-content: space-between;
             gap: 20px;
         }
- 
+
         header .header-text { min-width: 0; }
         header h1 { margin: 0 0 4px; font-size: 1.6rem; }
         header p { margin: 0; opacity: 0.9; font-size: 0.95rem; max-width: 950px; }
         header .logo { flex: 0 0 auto; height: 120px; width: auto; max-width: 200px; object-fit: contain; }
- 
+
         @media (max-width: 640px) {
             header { flex-direction: column; align-items: flex-start; }
             header .logo { height: 44px; }
         }
- 
+
         .wrap {
             max-width: 1200px;
             margin: 0 auto;
@@ -71,11 +71,11 @@
             grid-template-columns: 340px 1fr;
             gap: 22px;
         }
- 
+
         @media (max-width: 900px) {
             .wrap { grid-template-columns: 1fr; }
         }
- 
+
         .card {
             background: var(--card);
             border: 1px solid var(--line);
@@ -83,10 +83,10 @@
             padding: 20px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.04);
         }
- 
+
         .card h2 { margin: 0 0 14px; font-size: 1.05rem; }
         .field { margin-bottom: 15px; }
- 
+
         .field label {
             display: flex;
             justify-content: space-between;
@@ -95,12 +95,12 @@
             font-weight: 600;
             margin-bottom: 6px;
         }
- 
+
         .field label .val { color: var(--blue); font-variant-numeric: tabular-nums; }
         .field label .numwrap { display: inline-flex; align-items: center; gap: 4px; }
         .field label .numwrap .pre { color: var(--muted); font-weight: 600; }
         .field label .numwrap .suf { color: var(--muted); font-weight: 600; }
- 
+
         .field label .numbox {
             width: 88px;
             padding: 3px 6px;
@@ -113,10 +113,10 @@
             text-align: right;
             font-variant-numeric: tabular-nums;
         }
- 
+
         .field label .numbox:focus { outline: none; border-color: var(--blue); }
         .field input[type="range"] { width: 100%; accent-color: var(--blue); }
- 
+
         .field input[type="number"], .field select {
             width: 100%;
             padding: 8px 10px;
@@ -125,9 +125,9 @@
             font-size: 0.9rem;
             font-family: inherit;
         }
- 
+
         .hint { font-size: 0.75rem; color: var(--muted); margin-top: 4px; }
- 
+
         .plan-note {
             font-size: 0.78rem;
             color: var(--muted);
@@ -137,47 +137,47 @@
             border-radius: 6px;
             margin-top: 4px;
         }
- 
+
         .chart-box { position: relative; height: 440px; }
- 
+
         .stats {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             gap: 14px;
             margin-top: 18px;
         }
- 
+
         .stat {
             border: 1px solid var(--line);
             border-radius: 10px;
             padding: 12px 14px;
             background: #fafbfc;
         }
- 
+
         .stat .k { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); }
         .stat .v { font-size: 1.25rem; font-weight: 700; margin-top: 2px; font-variant-numeric: tabular-nums; }
         .stat .v.blue { color: var(--blue); }
         .stat .v.terra { color: var(--terracotta); }
- 
+
         .disclaimer { font-size: 0.72rem; color: var(--muted); margin-top: 16px; }
- 
+
         .tips { margin: 6px 0 4px; padding-left: 20px; }
         .tips li { font-size: 0.82rem; color: var(--ink); line-height: 1.5; margin-bottom: 9px; }
         .tips li strong { color: var(--blue); }
- 
+
         footer { text-align: center; font-size: 0.75rem; color: var(--muted); padding: 20px; }
     </style>
 </head>
 <body>
- 
+
     <header>
         <div class="header-text">
-            <h1>Student Finance Calculator</h1>
+            <h1>Student Loan Explorer</h1>
             <p>See how your student loan balance is projected to change over time based on your salary. The chart shows the loan in cash terms (nominal) as well as in today's-equivalent money (inflation-adjusted), so you can understand what the debt is really worth as you repay it.</p>
         </div>
         <img class="logo" src="logo.png" alt="Logo" />
     </header>
- 
+
     <div class="wrap">
         <!-- CONTROLS -->
         <section class="card" aria-label="Inputs">
@@ -197,21 +197,21 @@
                 </select>
                 <div class="plan-note" id="planNote"></div>
             </div>
- 
+
             <div class="field">
                 <label for="balance">Current loan balance
                     <span class="numwrap"><span class="pre">£</span><input type="number" class="numbox" id="balanceNum" min="0" max="120000" step="500" /></span>
                 </label>
                 <input type="range" id="balance" min="0" max="120000" step="500" value="45000" />
             </div>
- 
+
             <div class="field">
                 <label for="salary">Current salary
                     <span class="numwrap"><span class="pre">£</span><input type="number" class="numbox" id="salaryNum" min="15000" max="150000" step="500" /></span>
                 </label>
                 <input type="range" id="salary" min="15000" max="150000" step="500" value="32000" />
             </div>
- 
+
             <div class="field">
                 <label for="growth">Annual salary growth
                     <span class="numwrap"><input type="number" class="numbox" id="growthNum" min="0" max="8" step="0.1" /><span class="suf">%</span></span>
@@ -219,7 +219,7 @@
                 <input type="range" id="growth" min="0" max="8" step="0.1" value="3.5" />
                 <div class="hint">Average % pay rise per year (above inflation counts too).</div>
             </div>
- 
+
             <div class="field">
                 <label for="threshold">Repayment threshold
                     <span class="numwrap"><span class="pre">£</span><input type="number" class="numbox" id="thresholdNum" min="15000" max="40000" step="100" /></span>
@@ -227,14 +227,14 @@
                 <input type="range" id="threshold" min="15000" max="40000" step="100" value="27295" />
                 <div class="hint">You repay 9% of income above this (6% for postgraduate loans).</div>
             </div>
- 
+
             <div class="field">
                 <label for="interest">Loan interest rate
                     <span class="numwrap"><input type="number" class="numbox" id="interestNum" min="0" max="9" step="0.1" /><span class="suf">%</span></span>
                 </label>
                 <input type="range" id="interest" min="0" max="9" step="0.1" value="7.3" />
             </div>
- 
+
             <div class="field">
                 <label for="inflation">Inflation (RPI/CPI)
                     <span class="numwrap"><input type="number" class="numbox" id="inflationNum" min="0" max="8" step="0.1" /><span class="suf">%</span></span>
@@ -242,7 +242,7 @@
                 <input type="range" id="inflation" min="0" max="8" step="0.1" value="3.0" />
                 <div class="hint">Used to show the debt in today's money.</div>
             </div>
- 
+
             <div class="field">
                 <label for="writeoff">Written off after
                     <span class="numwrap"><input type="number" class="numbox" id="writeoffNum" min="10" max="40" step="1" /><span class="suf">yrs</span></span>
@@ -251,7 +251,7 @@
                 <div class="hint">Any remaining balance is cancelled after this many years.</div>
             </div>
         </section>
- 
+
         <!-- OUTPUT -->
         <section class="card" aria-label="Projection">
             <h2>Projected balance over time</h2>
@@ -263,17 +263,17 @@
                 <div class="stat"><div class="k">Total repaid (today's money)</div><div class="v" id="statRepaidReal">-</div></div>
                 <div class="stat"><div class="k">Written off</div><div class="v terra" id="statWritten">-</div></div>
             </div>
- 
+
             <p class="disclaimer">
                 This is a simplified educational model. It assumes steady salary growth, constant interest and inflation rates, annual repayments of 9% of income above the threshold (6% for postgraduate loans), and that the threshold rises with inflation. Real UK student loan rules vary and change over time - always check the official figures on GOV.UK before making decisions.
             </p>
- 
+
             <h2 style="margin-top:26px;">Total repaid vs. starting salary</h2>
             <p class="hint" style="margin-top:-6px; margin-bottom:12px;">
                 Using all your other settings, this sweeps the <strong>starting salary</strong> across the x-axis to show the total you'd repay over the life of the loan - in cash and in today's money. The dot marks your current salary.
             </p>
             <div class="chart-box" style="height:360px;"><canvas id="chart2"></canvas></div>
- 
+
             <h2 style="margin-top:26px;">How to read these charts</h2>
             <ul class="tips">
                 <li><strong>Lowest earners often repay the least overall.</strong> If your salary stays below the repayment threshold, you may pay little or nothing - and any remaining balance is written off at the end of the term.</li>
@@ -285,9 +285,9 @@
             </ul>
         </section>
     </div>
- 
+
     <footer>Built for financial education • Not financial advice</footer>
- 
+
     <script>
         // ---- Plan presets (indicative 2024/25 figures; user-adjustable) ----
         const PLANS = {
@@ -303,18 +303,18 @@
                     note: "Postgraduate Loan: repay 6% above threshold; written off after 30 years." },
             custom: { note: "Custom: set every value yourself." }
         };
- 
+
         const $ = (id) => document.getElementById(id);
         const gbp0 = new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP', maximumFractionDigits: 0 });
- 
+
         const inputs = {
             balance: $('balance'), salary: $('salary'), growth: $('growth'),
             threshold: $('threshold'), interest: $('interest'), inflation: $('inflation'),
             writeoff: $('writeoff'), plan: $('plan')
         };
- 
+
         let repayRate = PLANS.plan2.rate;
- 
+
         function applyPlan(key) {
             const p = PLANS[key];
             if (key !== 'custom') {
@@ -326,7 +326,7 @@
             $('planNote').textContent = p.note;
             render();
         }
- 
+
         // ---- Core projection ----
         function project(startSalary) {
             const balance0 = +inputs.balance.value;
@@ -336,16 +336,16 @@
             const interest = +inputs.interest.value / 100;
             const inflation = +inputs.inflation.value / 100;
             const writeoff = +inputs.writeoff.value;
- 
+
             const years = [0];
             const nominal = [balance0];
             const real = [balance0];
- 
+
             let bal = balance0;
             let totalRepaidNom = 0;
             let totalRepaidReal = 0;
             let clearedYear = null;
- 
+
             for (let y = 1; y <= writeoff; y++) {
                 // Interest accrues on the outstanding balance.
                 bal *= (1 + interest);
@@ -353,25 +353,25 @@
                 const repayment = Math.max(0, (salary - threshold)) * repayRate;
                 const actualRepay = Math.min(repayment, bal);
                 bal -= actualRepay;
- 
+
                 totalRepaidNom += actualRepay;
                 totalRepaidReal += actualRepay / Math.pow(1 + inflation, y);
- 
+
                 years.push(y);
                 nominal.push(Math.max(0, bal));
                 real.push(Math.max(0, bal) / Math.pow(1 + inflation, y));
- 
+
                 if (bal <= 0 && clearedYear === null) { clearedYear = y; }
- 
+
                 // Grow salary and uprate the threshold with inflation for next year.
                 salary *= (1 + growth);
                 threshold *= (1 + inflation);
             }
- 
+
             const writtenOff = clearedYear === null ? Math.max(0, bal) : 0;
             return { years, nominal, real, totalRepaidNom, totalRepaidReal, clearedYear, writtenOff, writeoff };
         }
- 
+
         // ---- Chart ----
         let chart;
         function render() {
@@ -382,9 +382,9 @@
                 if (box && document.activeElement !== box) box.value = inputs[k].value;
             });
             $('planTag').textContent = repayRate === 0.06 ? '6% repay' : '9% repay';
- 
+
             const d = project(null);
- 
+
             const data = {
                 datasets: [
                     {
@@ -403,7 +403,7 @@
                     },
                 ],
             };
- 
+
             const opts = {
                 responsive: true, maintainAspectRatio: false,
                 interaction: { mode: 'index', intersect: false },
@@ -425,22 +425,22 @@
                         grid: { color: '#eef1f4' }, beginAtZero: true },
                 },
             };
- 
+
             if (chart) {
                 chart.data = data; chart.options = opts; chart.update();
             } else {
                 chart = new Chart($('chart'), { type: 'line', data, options: opts });
             }
- 
+
             // stats
             $('statCleared').textContent = d.clearedYear ? d.clearedYear + (d.clearedYear === 1 ? ' year' : ' years') : 'Not cleared';
             $('statRepaid').textContent = gbp0.format(d.totalRepaidNom);
             $('statRepaidReal').textContent = gbp0.format(d.totalRepaidReal);
             $('statWritten').textContent = gbp0.format(d.writtenOff);
- 
+
             renderSalarySweep();
         }
- 
+
         // ---- Second chart: total repaid vs. starting salary ----
         let chart2;
         function renderSalarySweep() {
@@ -448,18 +448,18 @@
             const max = +inputs.salary.max;
             const step = Math.max(500, Math.round((max - min) / 120 / 500) * 500);
             const current = +inputs.salary.value;
- 
+
             const cash = [];
             const real = [];
- 
+
             for (let s = min; s <= max; s += step) {
                 const r = project(s);
                 cash.push({ x: s, y: r.totalRepaidNom });
                 real.push({ x: s, y: r.totalRepaidReal });
             }
- 
+
             const cur = project(current);
- 
+
             const data = {
                 datasets: [
                     {
@@ -482,7 +482,7 @@
                     },
                 ],
             };
- 
+
             const opts = {
                 responsive: true, maintainAspectRatio: false,
                 interaction: { mode: 'index', intersect: false },
@@ -504,14 +504,14 @@
                         grid: { color: '#eef1f4' }, beginAtZero: true },
                 },
             };
- 
+
             if (chart2) {
                 chart2.data = data; chart2.options = opts; chart2.update();
             } else {
                 chart2 = new Chart($('chart2'), { type: 'line', data, options: opts });
             }
         }
- 
+
         // ---- Wire up ----
         inputs.plan.addEventListener('change', (e) => applyPlan(e.target.value));
         ['balance','salary','growth','threshold','interest','inflation','writeoff']
@@ -522,8 +522,7 @@
                 }
                 render();
             }));
-        
-        
+
         // Typed number boxes feed back into the sliders (clamped to each slider's range).
         ['balance','salary','growth','threshold','interest','inflation','writeoff']
             .forEach((k) => {
@@ -540,7 +539,7 @@
                 // On blur/Enter, snap the box to the (clamped) slider value for a clean display.
                 box.addEventListener('change', () => { box.value = slider.value; });
             });
- 
+
         applyPlan('plan2');
     </script>
 </body>
