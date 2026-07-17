@@ -522,3 +522,26 @@
                 }
                 render();
             }));
+        
+        
+        // Typed number boxes feed back into the sliders (clamped to each slider's range).
+        ['balance','salary','growth','threshold','interest','inflation','writeoff']
+            .forEach((k) => {
+                const box = $(k + 'Num');
+                const slider = inputs[k];
+                const sync = () => {
+                    let v = parseFloat(box.value);
+                    if (isNaN(v)) return;
+                    v = Math.min(+slider.max, Math.max(+slider.min, v));
+                    slider.value = v;
+                    render();
+                };
+                box.addEventListener('input', sync);
+                // On blur/Enter, snap the box to the (clamped) slider value for a clean display.
+                box.addEventListener('change', () => { box.value = slider.value; });
+            });
+ 
+        applyPlan('plan2');
+    </script>
+</body>
+</html>
