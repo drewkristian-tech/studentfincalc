@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://studentfincalc.com/sitemap.xml
